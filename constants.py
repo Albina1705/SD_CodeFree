@@ -1,0 +1,8 @@
+BAUDRATE = 38400
+
+STX = 0x53
+ETX = 0xAA
+
+HANDSHAKE_RX = bytes.fromhex("53 20 04 10 30 20 AA")
+HANDSHAKE_TX = bytes.fromhex("53 10 04 10 40 50 AA")
+REQUEST_RECORD = bytes.fromhex("53 10 04 10 60 70 AA")
