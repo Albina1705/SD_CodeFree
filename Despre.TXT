@@ -1,9 +1,0 @@
-SD_CodeFree/
-│
-├── main.py           # aplicația principală
-├── protocol.py       # comunicația serială
-├── decoder.py        # decodificarea pachetelor
-├── utils.py          # funcții ajutătoare
-├── constants.py      # constante/protocoale
-├── reading.py        # clasa Reading
-└── requirements.txt

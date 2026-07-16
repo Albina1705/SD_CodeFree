@@ -1,39 +1,44 @@
-from protocol_v1 import SDCodefreeProtocol
+import json
 
-meter = SDCodefreeProtocol("COM4", debug=True)
+from protocol import SDCodefreeProtocol
+from decoder import decode_record
+from export_csv import save_csv
 
-print("Conectare...")
+meter = SDCodefreeProtocol(debug=True)
 
-meter.connect()
+try:
+    print("Conectare...")
+    meter.connect()
+    print("OK!")
 
-print("OK!")
+    readings = meter.download_all()
 
-meter.wait_handshake()
+    print("Număr:", len(readings))
 
-print("Handshake primit!")
+    for r in readings:
+     print(r.to_dict())
 
-meter.send_handshake()
+    import os
 
-print("Handshake trimis!")
+    print("Scriu în:", os.path.abspath("output/readings.json"))
 
-count = meter.read_count()
+    data = [r.to_dict() for r in readings]
+    print("Data =", data)
+    with open("output/readings.json", "w", encoding="utf-8") as f:
+        json.dump(
+            [r.to_dict() for r in readings],
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
 
-print("Memorie:", count, "înregistrări")
+    print("Fișier readings.json salvat.")
 
-for i in range(count):
+    save_csv(readings, "output/readings.csv")
 
-    print(f"\n=== Înregistrarea {i+1}/{count} ===")
+    print("Fișier output/readings.csv salvat.")
+    print("Număr înregistrări:", len(readings))
 
-    meter.request_record()
-
-    record = meter.fetch_record()
-
-    print(record)
-
-meter.close()
-
-print("Memorie:", count, "înregistrări")
-
-meter.close()
-
-print("Port închis.")
+finally:
+    meter.disconnect()
+    print("Port închis.")
