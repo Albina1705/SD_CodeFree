@@ -4,7 +4,7 @@ from protocol import SDCodefreeProtocol
 from decoder import decode_record
 from export_csv import save_csv
 
-meter = SDCodefreeProtocol(debug=True)
+meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=False)
 
 try:
     print("Conectare...")

@@ -2,17 +2,25 @@ import serial
 import time
 
 from serial.tools import list_ports
+from serial_utils import find_serial_port
 
 from constants import *
 from decoder import decode_record
 
+from protocol_analysis import debug_checksum
 
 class SDCodefreeProtocol:
 
-    def __init__(self, port=None, baudrate=BAUDRATE, debug=False):
+    def __init__(self,
+                port=None,
+                baudrate=38400,
+                debug=False,
+                analyze_protocol=False):
+
         self.port = port
         self.baudrate = baudrate
         self.debug = debug
+        self.analyze_protocol = analyze_protocol
         self.ser = None
 
     def find_port(self):
@@ -26,7 +34,8 @@ class SDCodefreeProtocol:
                 print(f"  {p.device}  {p.description}")
 
         if len(ports) == 0:
-            raise Exception("Nu există niciun port serial.")
+            raise RuntimeError("Nu există niciun port serial.")
+            raise RuntimeError("Nu am găsit adaptorul USB-Serial.")
 
         if len(ports) == 1:
             return ports[0].device
@@ -41,6 +50,7 @@ class SDCodefreeProtocol:
                 "FT232" in d or
                 "FTDI" in d or
                 "CH340" in d or
+                "CH910" in d or
                 "USB SERIAL" in d
             ):
                 return p.device
@@ -50,8 +60,11 @@ class SDCodefreeProtocol:
     def connect(self):
         if self.port is None:
             self.port = self.find_port()
-        if self.debug:
-            print(f"Folosesc portul: {self.port}")    
+
+        if self.port is None:
+            raise RuntimeError("Nu a fost găsit niciun adaptor USB-Serial.")
+
+        
 
         self.ser = serial.Serial(
             port=self.port,
@@ -61,10 +74,10 @@ class SDCodefreeProtocol:
             stopbits=1,
             timeout=0.05,
         )
+       
         self.ser.reset_input_buffer()
         self.ser.reset_output_buffer()
-        if self.port is None:
-            self.port = self.find_port()
+        
 
     def disconnect(self):
         if self.ser and self.ser.is_open:
@@ -124,9 +137,10 @@ class SDCodefreeProtocol:
         # Verificăm dacă pachetul este valid
         if not self.validate_packet(packet):
             return b""
-        if self.debug:
+        
+        if self.analyze_protocol:
+            debug_checksum(packet)
 
-            self.debug_checksum(packet)
         return packet
 
     def wait_handshake(self):
@@ -158,25 +172,7 @@ class SDCodefreeProtocol:
         self.send_packet(REQUEST_RECORD)
         return self.read_packet()
 
-    def debug_checksum(self, packet):
-
-        check = packet[-2]
-
-        print(f"\nCHECK = {check:02X}")
-
-        found = False
-
-        for i in range(len(packet)-2):
-            s = sum(packet[i:-2]) & 0xFF
-
-            if s == check:
-                print(f"MATCH începe la byte {i}")
-                found = True
-
-        if not found:
-            print("Nu s-a găsit nicio potrivire.")
-
-    from decoder import decode_record
+    
 
     def download_all(self):
 
@@ -200,9 +196,13 @@ class SDCodefreeProtocol:
                 print("Pachet invalid.")
                 continue
 
-            record = decode_record(packet)
-            readings.append(record)
+            if self.analyze_protocol:
+                debug_checksum(packet)
 
-            print(record)
+            reading = decode_record(packet)
+
+            if reading is not None:
+                print(reading)
+                readings.append(reading)
 
         return readings
