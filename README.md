@@ -65,6 +65,11 @@ Run the application:
 ```bash
 python main.py
 ```
+## Hardware
+
+The application communicates with the SD CodeFree blood glucose meter using the original USB serial cable.
+
+![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpeg)
 
 The program will:
 
