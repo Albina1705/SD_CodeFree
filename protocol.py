@@ -6,8 +6,8 @@ from serial_utils import find_serial_port
 
 from constants import *
 from decoder import decode_record
+import protocol_analysis
 
-from protocol_analysis import debug_checksum
 
 class SDCodefreeProtocol:
 
@@ -138,8 +138,6 @@ class SDCodefreeProtocol:
         if not self.validate_packet(packet):
             return b""
         
-        if self.analyze_protocol:
-            debug_checksum(packet)
 
         return packet
 
@@ -171,6 +169,7 @@ class SDCodefreeProtocol:
     def request_record(self):
         self.send_packet(REQUEST_RECORD)
         return self.read_packet()
+    
 
     
 
@@ -186,6 +185,7 @@ class SDCodefreeProtocol:
         print(f"Memorie: {count} înregistrări")
 
         readings = []
+        packets = []
 
         for i in range(count):
             print(f"\n=== Înregistrarea {i+1}/{count} ===")
@@ -196,13 +196,25 @@ class SDCodefreeProtocol:
                 print("Pachet invalid.")
                 continue
 
+            # Salvăm pachetul pentru analiza finală
+            packets.append(packet)
+
             if self.analyze_protocol:
-                debug_checksum(packet)
+                protocol_analysis.hexdump(packet)
+                protocol_analysis.debug_checksum(packet)
+                protocol_analysis.analyze_record(packet)
 
             reading = decode_record(packet)
 
             if reading is not None:
                 print(reading)
                 readings.append(reading)
+
+        # Analiza întregului set se face o singură dată,
+        # după ce au fost citite toate înregistrările
+        
+        if self.analyze_protocol:
+            protocol_analysis.analyze_dataset(packets)
+            protocol_analysis.analyze_flags(packets)   
 
         return readings

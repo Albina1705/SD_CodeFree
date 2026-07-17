@@ -4,7 +4,8 @@ from protocol import SDCodefreeProtocol
 from decoder import decode_record
 from export_csv import save_csv
 
-meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=False)
+
+meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=True)
 
 try:
     print("Conectare...")
@@ -38,6 +39,7 @@ try:
 
     print("Fișier output/readings.csv salvat.")
     print("Număr înregistrări:", len(readings))
+    
 
 finally:
     meter.disconnect()
