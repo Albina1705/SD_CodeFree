@@ -1,9 +1,15 @@
+# Python
 __pycache__/
-
-output/
-*.csv
-*.json
+*.pyc
 *.pyo
 *.pyd
 
+# VS Code
 .vscode/
+
+# Generated output files
+output/*.csv
+output/*.json
+
+# Keep the output directory
+!output/.gitkeep

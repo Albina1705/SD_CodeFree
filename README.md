@@ -4,6 +4,8 @@
 
 Python application for communicating with **SD CodeFree** blood glucose meters through the original USB serial cable. The project is the result of reverse engineering the communication protocol and provides a complete solution for downloading and exporting stored measurements.
 
+![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpeg)
+
 ## Features
 
 * Automatic serial port detection
@@ -35,16 +37,24 @@ Known limitations:
 ## Project structure
 
 ```text
-main.py
-protocol.py
-decoder.py
-protocol_analysis.py
-constants.py
-models.py
-export_csv.py
-output/
-README.md
-LICENSE
+SD_CodeFree/
+├── docs/
+│   └── images/
+├── output/
+├── main.py
+├── protocol.py
+├── decoder.py
+├── protocol_analysis.py
+├── constants.py
+├── models.py
+├── export_csv.py
+├── serial_utils.py
+├── utils.py
+├── README.md
+├── CHANGELOG.md
+├── PROTOCOL.md
+├── LICENSE
+└── requirements.txt
 ```
 
 ## Requirements
@@ -69,7 +79,6 @@ python main.py
 
 The application communicates with the SD CodeFree blood glucose meter using the original USB serial cable.
 
-![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpeg)
 
 The program will:
 
@@ -92,7 +101,7 @@ output/readings.csv
 
 The application communicates with the SD CodeFree blood glucose meter using the original USB serial cable.
 
-![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpg)
+
 
 The meter enters **PC mode** when connected, allowing the stored measurements to be downloaded over the serial interface.
 
@@ -116,12 +125,5 @@ This project is an independent Python implementation with additional protocol an
 
 ## License
 
-MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+This project is licensed under the MIT License.
+See the LICENSE file for details.
