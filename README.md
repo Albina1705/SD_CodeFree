@@ -6,15 +6,39 @@ Python application for communicating with **SD CodeFree** blood glucose meters t
 
 ![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpeg)
 
+
 ## Features
 
 * Automatic serial port detection
-* Automatic handshake
-* Full memory download
-* Date, time and glucose decoding
+* Download all stored readings
+* Date and time decoding
+* Blood glucose decoding
+* Meal marker decoding (Normal, Before meal, After meal)
 * JSON export
 * CSV export
-* Optional protocol analysis tools for reverse engineering
+
+## Tested hardware
+
+The software has been successfully tested with the following USB-to-Serial adapters:
+
+| Adapter | Status |
+|---------|--------|
+| CP2102 | ✅ Tested |
+| CH340C | ✅ Tested |
+
+Communication parameters:
+
+- 38400 baud
+- 8 data bits
+- No parity
+- 1 stop bit
+
+Connector:
+
+- 2.5 mm TRS jack
+- Tip = RxD
+- Ring = TxD
+- Sleeve = GND
 
 ## Project status
 
@@ -99,9 +123,25 @@ output/readings.csv
 
 ## Hardware
 
-The application communicates with the SD CodeFree blood glucose meter using the original USB serial cable.
+### CH340C USB interface
+
+![CH340C cable](images/ch340c_cable.jpg)
+
+### CP2102 USB interface
+
+![CP2102 cable](images/cp2102_cable.jpg)
 
 
+The project has been successfully tested using custom USB-to-2.5 mm TRS cables based on CP2102 and CH340C USB-to-Serial adapters.
+
+*(photo)*
+
+
+### Connector wiring
+
+- Tip = RxD
+- Ring = TxD
+- Sleeve = GND
 
 The meter enters **PC mode** when connected, allowing the stored measurements to be downloaded over the serial interface.
 
