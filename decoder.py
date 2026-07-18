@@ -46,7 +46,16 @@ def decode_record(packet):
     reading.hour = data[4]
     reading.minute = data[5]
     reading.glucose = data[7]
-    reading.meal = ""
+
+    # Meal marker
+    meal_flags = {
+        0x00: "Normal",
+        0x10: "Before meal",
+        0x20: "After meal",
+        0x30: "Control solution",
+    }
+
+    reading.meal = meal_flags.get(data[8] & 0x30, "")
 
     if DEBUG:
         print(
