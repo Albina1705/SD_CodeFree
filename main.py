@@ -2,8 +2,10 @@ import json
 import os
 from protocol import SDCodefreeProtocol
 from export_csv import save_csv
-from filter import filter_readings
 from emailer import send_email
+from glucose_stats import filter_readings, glucose_statistics
+
+
 
 
 meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=True)
@@ -57,10 +59,39 @@ try:
         attachment="output/readings_2026_07.csv"
 )
     print("Număr înregistrări:", len(readings))
-    
-    
-    meter.disconnect()
-    print("Port închis.")
+
+    year_input = input("An (Enter = toate): ").strip()
+    month_input = input("Luna (Enter = toate): ").strip()
+
+    year = int(year_input) if year_input else None
+    month = int(month_input) if month_input else None
+
+    filtered = filter_readings(readings, year, month)
+
+    stats = glucose_statistics(filtered)
+
+    if not filtered:
+        print("\nNu există înregistrări pentru perioada selectată.")
+    else:
+        print(f"\nÎnregistrări găsite: {len(filtered)}")
+
+        print("\n===== STATISTICI =====")
+
+        print(f"Înregistrări : {stats['count']}")
+        print(f"Minim        : {stats['min']} mg/dL")
+        print(f"Maxim        : {stats['max']} mg/dL")
+        print(f"Medie        : {stats['avg']} mg/dL")
+
+        print()
+        print(f"Normal       : {stats['normal']}")
+        print(f"Before meal  : {stats['before']}")
+        print(f"After meal   : {stats['after']}")
+        print(f"Control      : {stats['control']}")
+        
+
+        
+        meter.disconnect()
+        print("Port închis.")
 
 except Exception as e:
     print(f"A apărut o eroare în timpul execuției: {e}")

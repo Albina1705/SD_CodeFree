@@ -1,0 +1,1 @@
+generate_chart(filtered, "output/glucose_chart.png")
