@@ -20,46 +20,6 @@ try:
 
     readings = meter.download_all()
 
-    readings_2026_07 = filter_readings(
-        readings,
-        year=2026,
-        month=7
-    )
-
-    print()
-    print(f"Total măsurători : {len(readings)}")
-    print(f"Iulie 2026       : {len(readings_2026_07)}")
-
-    print("Număr:", len(readings))
-
-    for r in readings_2026_07:
-        print(r)
-
-    for r in readings:
-        print(r.to_dict())
-
-    data = [r.to_dict() for r in readings]
-
-    print("Scriu în:", os.path.abspath("output/readings.json"))
-
-    with open("output/readings.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
-    print("Fișier readings.json salvat.")
-
-    save_csv(readings, "output/readings.csv")
-    save_csv(
-        readings_2026_07,
-        "output/readings_2026_07.csv"
-    )
-    
-    send_email(
-        subject="Raport glicemie SD CodeFree",
-        body="Atașat găsiți raportul glicemiei.",
-        attachment="output/readings_2026_07.csv"
-)
-    print("Număr înregistrări:", len(readings))
-
     year_input = input("An (Enter = toate): ").strip()
     month_input = input("Luna (Enter = toate): ").strip()
 
@@ -70,28 +30,66 @@ try:
 
     stats = glucose_statistics(filtered)
 
+
+    
+
+    for r in filtered:
+        print(r.to_dict())
+
+    data = [r.to_dict() for r in filtered]
+
+    print("Scriu în:", os.path.abspath("output/readings.json"))
+
+    with open("output/readings.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+    print("Fișier readings.json salvat.")
+
+    save_csv(filtered, "output/readings.csv")
+    
+    
+    send_email(
+        subject="Raport glicemie SD CodeFree",
+        body="Atașat găsiți raportul glicemiei.",
+        attachment="output/readings.csv"
+)
+    
+
+   
     if not filtered:
         print("\nNu există înregistrări pentru perioada selectată.")
     else:
-        print(f"\nÎnregistrări găsite: {len(filtered)}")
+        if year is None and month is None:
+            perioada = "Toate înregistrările"
+        elif year is not None and month is None:
+            perioada = f"Anul {year}"
+        elif year is None and month is not None:
+            perioada = f"Luna {month:02d}"
+        else:
+            perioada = f"{month:02d}/{year}"
 
-        print("\n===== STATISTICI =====")
+    print("\n====================================")
+    print(f"Perioada selectată : {perioada}")
+    print(f"Înregistrări       : {len(filtered)}")
+    print("====================================")
 
-        print(f"Înregistrări : {stats['count']}")
-        print(f"Minim        : {stats['min']} mg/dL")
-        print(f"Maxim        : {stats['max']} mg/dL")
-        print(f"Medie        : {stats['avg']} mg/dL")
+    print("\n===== STATISTICI =====")
 
-        print()
-        print(f"Normal       : {stats['normal']}")
-        print(f"Before meal  : {stats['before']}")
-        print(f"After meal   : {stats['after']}")
-        print(f"Control      : {stats['control']}")
+    print(f"Înregistrări : {stats['count']}")
+    print(f"Minim        : {stats['min']} mg/dL")
+    print(f"Maxim        : {stats['max']} mg/dL")
+    print(f"Medie        : {stats['avg']} mg/dL")
+
+    print()
+    print(f"Normal       : {stats['normal']}")
+    print(f"Before meal  : {stats['before']}")
+    print(f"After meal   : {stats['after']}")
+    print(f"Control      : {stats['control']}")
         
 
         
-        meter.disconnect()
-        print("Port închis.")
+    meter.disconnect()
+    print("Port închis.")
 
 except Exception as e:
     print(f"A apărut o eroare în timpul execuției: {e}")
