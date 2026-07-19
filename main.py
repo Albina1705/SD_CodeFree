@@ -1,12 +1,15 @@
 import json
-
+import os
 from protocol import SDCodefreeProtocol
 from export_csv import save_csv
 from filter import filter_readings
-
+from emailer import send_email
 
 
 meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=True)
+
+
+
 
 try:
     print("Conectare...")
@@ -28,13 +31,10 @@ try:
     print("Număr:", len(readings))
 
     for r in readings_2026_07:
-     print(r)
+        print(r)
 
     for r in readings:
-     print(r.to_dict())
-
-    import os
-
+        print(r.to_dict())
 
     data = [r.to_dict() for r in readings]
 
@@ -50,10 +50,17 @@ try:
         readings_2026_07,
         "output/readings_2026_07.csv"
     )
-
+    
+    send_email(
+        subject="Raport glicemie SD CodeFree",
+        body="Atașat găsiți raportul glicemiei.",
+        attachment="output/readings_2026_07.csv"
+)
     print("Număr înregistrări:", len(readings))
     
-
-finally:
+    
     meter.disconnect()
     print("Port închis.")
+
+except Exception as e:
+    print(f"A apărut o eroare în timpul execuției: {e}")

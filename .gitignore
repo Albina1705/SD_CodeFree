@@ -6,6 +6,7 @@ __pycache__/
 
 # VS Code
 .vscode/
+config.py
 
 # Generated output files
 output/*.csv
