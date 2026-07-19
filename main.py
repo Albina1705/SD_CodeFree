@@ -1,9 +1,9 @@
 import json
 
 from protocol import SDCodefreeProtocol
-from decoder import decode_record
 from export_csv import save_csv
 from filter import filter_readings
+
 
 
 meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=True)
@@ -35,23 +35,22 @@ try:
 
     import os
 
-    print("Scriu în:", os.path.abspath("output/readings.json"))
 
     data = [r.to_dict() for r in readings]
-    print("Data =", data)
+
+    print("Scriu în:", os.path.abspath("output/readings.json"))
+
     with open("output/readings.json", "w", encoding="utf-8") as f:
-        json.dump(
-            [r.to_dict() for r in readings],
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
     print("Fișier readings.json salvat.")
 
     save_csv(readings, "output/readings.csv")
+    save_csv(
+        readings_2026_07,
+        "output/readings_2026_07.csv"
+    )
 
-    print("Fișier output/readings.csv salvat.")
     print("Număr înregistrări:", len(readings))
     
 

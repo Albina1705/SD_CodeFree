@@ -1,6 +1,10 @@
 import csv
+import os
 
-def save_csv(readings, filename="readings.csv"):
+
+def save_csv(readings, filename="output/readings.csv"):
+
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     with open(filename, "w", newline="", encoding="utf-8") as f:
 
@@ -16,4 +20,4 @@ def save_csv(readings, filename="readings.csv"):
                 r.meal
             ])
 
-    
+    print(f"Fișier CSV salvat: {filename}")
