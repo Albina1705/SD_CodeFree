@@ -4,7 +4,7 @@
 
 Python application for communicating with **SD CodeFree** blood glucose meters through the original USB serial cable. The project is the result of reverse engineering the communication protocol and provides a complete solution for downloading and exporting stored measurements.
 
-![SD CodeFree connected to PC](docs/images/sd_codefree_connection.jpeg)
+[Protocol specification](docs/PROTOCOL.md)
 
 
 ## Features

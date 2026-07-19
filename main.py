@@ -3,6 +3,7 @@ import json
 from protocol import SDCodefreeProtocol
 from decoder import decode_record
 from export_csv import save_csv
+from filter import filter_readings
 
 
 meter = SDCodefreeProtocol(port=None, debug=True, analyze_protocol=True)
@@ -14,7 +15,20 @@ try:
 
     readings = meter.download_all()
 
+    readings_2026_07 = filter_readings(
+        readings,
+        year=2026,
+        month=7
+    )
+
+    print()
+    print(f"Total măsurători : {len(readings)}")
+    print(f"Iulie 2026       : {len(readings_2026_07)}")
+
     print("Număr:", len(readings))
+
+    for r in readings_2026_07:
+     print(r)
 
     for r in readings:
      print(r.to_dict())
