@@ -4,7 +4,8 @@ from protocol import SDCodefreeProtocol
 from export_csv import save_csv
 from emailer import send_email
 from glucose_stats import filter_readings, glucose_statistics
-# from pdf_report import export_pdf
+from pdf_report import export_pdf
+
 
 
 
@@ -54,6 +55,8 @@ try:
 
     save_csv(filtered, "output/readings.csv")
 
+    export_pdf(filtered, stats)
+
     # Creează automat câte un fișier CSV pentru fiecare lună
     monthly_data = {}
 
@@ -69,7 +72,8 @@ try:
         monthly_count += 1
 
     print(f"Au fost generate {monthly_count} fișiere CSV lunare.")
-        # export_pdf(readings, stats)
+
+    
 
         
         
@@ -99,19 +103,37 @@ try:
     print(f"Înregistrări       : {len(filtered)}")
     print("====================================")
 
+    
     print("\n===== STATISTICI =====")
 
     print(f"Înregistrări : {stats['count']}")
-    print(f"Minim        : {stats['min']} mg/dL")
-    print(f"Maxim        : {stats['max']} mg/dL")
+
+    print(
+        f"Minim        : {stats['min']} mg/dL "
+        f"({stats['min_reading'].day:02d}."
+        f"{stats['min_reading'].month:02d}."
+        f"{stats['min_reading'].year} "
+        f"{stats['min_reading'].hour:02d}:"
+        f"{stats['min_reading'].minute:02d})"
+    )
+
+    print(
+        f"Maxim        : {stats['max']} mg/dL "
+        f"({stats['max_reading'].day:02d}."
+        f"{stats['max_reading'].month:02d}."
+        f"{stats['max_reading'].year} "
+        f"{stats['max_reading'].hour:02d}:"
+        f"{stats['max_reading'].minute:02d})"
+    )
+
     print(f"Medie        : {stats['avg']} mg/dL")
 
-    print()
-    print(f"Normal       : {stats['normal']}")
-    print(f"Before meal  : {stats['before']}")
-    print(f"After meal   : {stats['after']}")
-    print(f"Control      : {stats['control']}")
-        
+    print(
+    f"Normal       : {stats['normal']}\n"
+    f"Before meal  : {stats['before']}\n"
+    f"After meal   : {stats['after']}\n"
+    f"Control      : {stats['control']}"
+)
     
     meter.disconnect()
     print("Port închis.")
