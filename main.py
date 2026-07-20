@@ -4,6 +4,8 @@ from protocol import SDCodefreeProtocol
 from export_csv import save_csv
 from emailer import send_email
 from glucose_stats import filter_readings, glucose_statistics
+# from pdf_report import export_pdf
+
 
 
 
@@ -33,8 +35,13 @@ try:
 
     
 
-    for r in filtered:
-        print(r.to_dict())
+    DEBUG = False
+
+    if DEBUG:
+
+        for r in filtered:
+
+            print(r.to_dict())
 
     data = [r.to_dict() for r in filtered]
 
@@ -46,8 +53,27 @@ try:
     print("Fișier readings.json salvat.")
 
     save_csv(filtered, "output/readings.csv")
-    
-    
+
+    # Creează automat câte un fișier CSV pentru fiecare lună
+    monthly_data = {}
+
+    for r in filtered:
+        key = (r.year, r.month)
+        monthly_data.setdefault(key, []).append(r)
+
+    monthly_count = 0
+
+    for (y, m), readings in sorted(monthly_data.items()):
+        monthly_filename = f"output/readings_{y}_{m:02d}.csv"
+        save_csv(readings, monthly_filename, verbose=False)
+        monthly_count += 1
+
+    print(f"Au fost generate {monthly_count} fișiere CSV lunare.")
+        # export_pdf(readings, stats)
+
+        
+        
+        
     send_email(
         subject="Raport glicemie SD CodeFree",
         body="Atașat găsiți raportul glicemiei.",
@@ -86,8 +112,7 @@ try:
     print(f"After meal   : {stats['after']}")
     print(f"Control      : {stats['control']}")
         
-
-        
+    
     meter.disconnect()
     print("Port închis.")
 

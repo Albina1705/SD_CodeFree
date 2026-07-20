@@ -1,0 +1,4 @@
+git status
+git add .
+git commit -m "Add automatic monthly CSV export and improve console output"
+git push

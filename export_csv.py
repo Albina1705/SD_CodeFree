@@ -2,7 +2,7 @@ import csv
 import os
 
 
-def save_csv(readings, filename="output/readings.csv"):
+def save_csv(readings, filename="output/readings.csv", verbose=True):
 
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
@@ -20,4 +20,5 @@ def save_csv(readings, filename="output/readings.csv"):
                 r.meal
             ])
 
-    print(f"Fișier CSV salvat: {filename}")
+    if verbose:
+        print(f"Fișier CSV salvat: {filename}")
