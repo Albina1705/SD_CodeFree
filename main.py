@@ -48,8 +48,19 @@ try:
 
     print("Scriu în:", os.path.abspath("output/readings.json"))
 
+    import os
+
+    OUTPUT_DIR = "output"
+
+    json_file = os.path.join(OUTPUT_DIR, "readings.json")
+    csv_file = os.path.join(OUTPUT_DIR, "readings.csv")
+    pdf_file = os.path.join(OUTPUT_DIR, "SD_CodeFree_Report_All.pdf")
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     with open("output/readings.json", "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
 
     print("Fișier readings.json salvat.")
 
